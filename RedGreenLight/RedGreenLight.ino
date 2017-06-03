@@ -21,3 +21,13 @@ void setup() {
 void loop() {
 
 }
+
+void displayTime(int time)
+{
+
+}
+
+void settingMode()
+{
+
+}
