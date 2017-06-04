@@ -1,15 +1,15 @@
 /*
 這是一個紅綠燈程式
  */
-int mode = 0;//記憶此時位於的模式，0為預設模式，1為強制模式，2為測心率模式
+int mode = 0;//記憶此時位於的模式，0為預設模式，1為強制模式綠燈，2為強制模式紅燈，3為測心率模式，4為settingMode
 int GrTime = 0;//綠燈設定ㄉ時間
 int RdTime = 0;//紅燈設定ㄉ時間
 void displayTime(int time);//顯示時間的函數
 void settingMode();//呼叫進入設定綠燈紅燈時間的模式
 void DefaultMode();//進入預設模式
-void ForceMode();//進入強制模式
+void ForceMode(int light);//進入強制模式，傳入0進入綠燈，傳入1進入紅燈
 void HeartRateMode();//進入測心率模式
-boolean changeMode();//轉換模式測試
+boolean changeMode();//轉換模式測試，要轉換模式傳回是，不用轉換模式傳回否
 
 int Button1();//回傳個位數的按鈕是否按下，是則回傳1，否則回傳0
 int Button2();//回傳十位數的按鈕是否...
@@ -18,7 +18,7 @@ int ButtonS();//回傳設定紐...
 int Buttons1 = 0;//紀錄上一次檢查button1狀態的變數
 int Buttons2 = 0;//紀錄上一次...
 int ButtonsS = 0;//紀錄...
-int pause = 0;//暫停的切換器
+boolean pause = false;//暫停的切換器
 
 void Green(int val);//綠燈亮，val 傳入LOW關閉，HIGH打開
 void Red(int val);//紅燈亮...
@@ -35,10 +35,18 @@ void loop() {
 	switch (mode) {
 	case 0:
 		DefaultMode();
+		break;
 	case 1:
-		ForceMode();
+		ForceMode(0);
+		break;
 	case 2:
+		ForceMode(1);
+		break;
+	case 3:
 		HeartRateMode();
+		break;
+	case 4:
+		settingMode();
 	}
 }
 
@@ -85,8 +93,59 @@ void DefaultMode()
 	} while (!changeMode());
 }
 
+void ForceMode(int light)
+{
+}
+
+void HeartRateMode()
+{
+}
+
 boolean changeMode()
 {
-
-	return true;
+	int status = Button1() + Button2() * 10 + ButtonS() * 100;
+	switch (status) {
+	case 0:
+		if (Buttons1 > 0) {
+			Buttons1 = 0;
+			mode = 1;
+			return true;
+		}
+		if (Buttons2 > 0) {
+			Buttons2 = 0;
+			mode = 2;
+			return true;
+		}
+		if (ButtonsS > 0) {
+			ButtonsS = 0;
+			pause = !pause;
+			return true;
+		}
+		return false;
+	case 100:
+		ButtonsS++;
+		if (ButtonsS >= 4) {
+			ButtonsS = 0;
+			if (mode == 0) {
+				mode = 4;
+				return true;
+			}
+			if (mode == 1 || mode == 2) {
+				mode = 0;
+				return true;
+			}
+		}
+		return false;
+	case 1:
+		Buttons1++;
+		if (Buttons1 >= 4) {
+			Buttons1 = 0;
+			mode = 3;
+			return true;
+		}
+		return false;
+	default:
+		return false;
+	}
+	return false;
 }
