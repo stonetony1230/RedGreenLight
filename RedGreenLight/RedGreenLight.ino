@@ -63,10 +63,10 @@ void settingMode()
 
 void DefaultMode()
 {
+	int light = 0;//0 is green, 1 is orange, 2 is red
+	int time = GrTime * 10;//綠燈時間的百毫秒
 	do {
-		int light = 0;//0 is green, 1 is orange, 2 is red
-		int time = GrTime * 10;//綠燈時間的百毫秒
-		if (pause == 0) {
+		if (!pause) {
 			if (time == 0) {
 				light = light + 1;
 				if (light == 3)
@@ -86,8 +86,8 @@ void DefaultMode()
 					time = RdTime * 10;
 				}
 			}
-			time--;
 			displayTime(time / 10);
+			time--;
 		}
 		delay(100);
 	} while (!changeMode());
@@ -95,6 +95,27 @@ void DefaultMode()
 
 void ForceMode(int light)
 {
+	int time = 0;//百毫秒數
+	if (light == 0) {
+		Green(HIGH);
+		Red(LOW);
+		Orange(LOW);
+	}
+	else if (light == 1) {
+		Green(LOW);
+		Red(HIGH);
+		Orange(LOW);
+	}
+	do {
+		if (!pause) {
+			if (time > 600)
+				displayTime(time / 600);
+			else
+				displayTime(time / 10);
+			time++;
+			delay(100);
+		}
+	} while (!changeMode());
 }
 
 void HeartRateMode()
