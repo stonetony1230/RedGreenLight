@@ -9,7 +9,7 @@ void settingMode();//㊣秈砞﹚厚縊縊丁家Α
 void DefaultMode();//秈箇砞家Α
 void ForceMode(int light);//秈眏家Α肚0秈厚縊肚1秈縊
 void HeartRateMode();//秈代み瞯家Α
-boolean changeMode();//锣传家Α代刚璶锣传家Α肚琌ぃノ锣传家Α肚
+boolean changeMode();//锣传家Α代刚璶锣传家Α肚琌ぃノ锣传家Α肚莱赣–0.1砆㊣Ω箇砞┪眏家Α
 
 int Button1();//肚计秙琌琌玥肚1玥肚0
 int Button2();//肚计秙琌...
@@ -144,6 +144,8 @@ boolean changeMode()
 			return true;
 		}
 		return false;
+	case 10:
+		Buttons2++;
 	default:
 		return false;
 	}
