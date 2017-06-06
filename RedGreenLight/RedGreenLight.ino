@@ -15,9 +15,10 @@ int Button1();//回傳個位數的按鈕是否按下，是則回傳1，否則回傳0
 int Button2();//回傳十位數的按鈕是否...
 int ButtonS();//回傳設定紐...
 
-int Buttons1 = 0;//紀錄上一次檢查button1狀態的變數
-int Buttons2 = 0;//紀錄上一次...
-int ButtonsS = 0;//紀錄...
+int Buttons1 = 0;//紀錄上一次檢查button1狀態的變數，個位數
+int Buttons2 = 0;//紀錄上一次...，十位數
+int ButtonsS = 0;//紀錄...，設定/暫停鍵
+void Buttonsreset();//重製按鈕狀態變數
 boolean pause = false;//暫停的切換器
 
 void Green(int val);//綠燈亮，val 傳入LOW關閉，HIGH打開
@@ -140,17 +141,17 @@ boolean changeMode()
 	switch (status) {
 	case 0:
 		if (Buttons1 > 0) {
-			Buttons1 = 0;
+			Buttonsreset();
 			mode = 1;
 			return true;
 		}
 		if (Buttons2 > 0) {
-			Buttons2 = 0;
+			Buttonsreset();
 			mode = 2;
 			return true;
 		}
 		if (ButtonsS > 0) {
-			ButtonsS = 0;
+			Buttonsreset();
 			pause = !pause;
 			return false;
 		}
@@ -158,7 +159,7 @@ boolean changeMode()
 	case 100:
 		ButtonsS++;
 		if (ButtonsS >= 4) {
-			ButtonsS = 0;
+			Buttonsreset();
 			if (mode == 0) {
 				mode = 4;
 				return true;
@@ -172,7 +173,7 @@ boolean changeMode()
 	case 1:
 		Buttons1++;
 		if (Buttons1 >= 4) {
-			Buttons1 = 0;
+			Buttonsreset();
 			mode = 3;
 			return true;
 		}
@@ -183,4 +184,11 @@ boolean changeMode()
 		return false;
 	}
 	return false;
+}
+
+void Buttonsreset()
+{
+	Buttons1 = 0;
+	Buttons2 = 0;
+	ButtonsS = 0;
 }
