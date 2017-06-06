@@ -15,9 +15,9 @@ int Button1();//回傳個位數的按鈕是否按下，是則回傳1，否則回傳0
 int Button2();//回傳十位數的按鈕是否...
 int ButtonS();//回傳設定紐...
 
-int Buttons1 = 0;//紀錄上一次檢查button1狀態的變數，個位數
-int Buttons2 = 0;//紀錄上一次...，十位數
-int ButtonsS = 0;//紀錄...，設定/暫停鍵
+int Buttons1 = 0;//紀錄button1狀態的變數，個位數
+int Buttons2 = 0;//紀錄十位數
+int ButtonsS = 0;//紀錄設定/暫停鍵
 void Buttonsreset();//重製按鈕狀態變數
 boolean pause = false;//暫停的切換器
 
@@ -120,7 +120,6 @@ void ForceMode(int light)
 
 void HeartRateMode()
 {
-	ButtonsS = 0;
 	int count = 0;//計數器
 	for (int time = 0; time <= 600; time++) {
 		if (ButtonS())
