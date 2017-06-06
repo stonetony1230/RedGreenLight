@@ -120,6 +120,19 @@ void ForceMode(int light)
 
 void HeartRateMode()
 {
+	ButtonsS = 0;
+	int count = 0;//計數器
+	for (int time = 0; time <= 600; time++) {
+		if (ButtonS())
+			ButtonsS++;
+		else if (ButtonsS > 0) {
+			count++;
+			ButtonsS = 0;
+		}
+		delay(100);
+	}
+	displayTime(count);//顯示平均每分鐘的心跳數
+	mode = 0;
 }
 
 boolean changeMode()
@@ -140,7 +153,7 @@ boolean changeMode()
 		if (ButtonsS > 0) {
 			ButtonsS = 0;
 			pause = !pause;
-			return true;
+			return false;
 		}
 		return false;
 	case 100:
