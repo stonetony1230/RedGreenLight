@@ -66,16 +66,16 @@ void displayTime(int time)//153458
 		{1,0,1,1,1,1,1,0},//6
 		{1,1,1,0,0,0,0,0},//7
 		{1,1,1,1,1,1,1,0},//8
-		{1,1,1,1,0,1,1,0}}; //9 
-    
+		{1,1,1,1,0,1,1,0} }; //9 
+
 	if (digit > 9)
-		digit = 0 ;
+		digit = 0;
 	if (tendigit > 9)
-		tendigit = 0 ;
+		tendigit = 0;
 	if (digit > 9, tendigit > 9)
 		digit = tendigit = 0;
-		digitalWrite( , HIGH);//*****************紅燈亮()紅燈腳位
- 
+	digitalWrite(, HIGH);//*****************紅燈亮()紅燈腳位
+
 
 
 }
@@ -83,35 +83,33 @@ void displayTime(int time)//153458
 
 void settingMode()
 {
-	int ButtomSstatus = 0 ; // 宣告設定鍵狀態
-	int Button1status = 0 ; // 宣告個位鍵狀態
-	int Button2status = 0 ; // 宣告十位鍵狀態
-	int digit = 0 ; //七段顯示個位數
+	int ButtomSstatus = 0; // 宣告設定鍵狀態
+	int Button1status = 0; // 宣告個位鍵狀態
+	int Button2status = 0; // 宣告十位鍵狀態
+	int digit = 0; //七段顯示個位數
 	int tendigit = 0; //七段顯示器十位數
-		ButtonSstatus = digitalRead();//判斷ButtonS 的電位 ()為接點*********************
-		delay(100);
-		   
-		if (ButtomSstatus == HIGH) //當設定鍵為高電位進入設定模式---綠燈>>>>紅燈
-			Button1status = digitalRead(); //()為接點***********************************
-       
-		displayTime();    
-				
-			if (Button1status == HIGH)
-				digit++;
-				 GrTime == digit; 
-			if (Button2status == HIGH)
-				tendigit++;
-				 GrTime += tendigit * 10 ;
+	ButtonSstatus = digitalRead();//判斷ButtonS 的電位 ()為接點*********************
+	delay(100);
+
+	if (ButtomSstatus == HIGH) //當設定鍵為高電位進入設定模式---綠燈>>>>紅燈
+		Button1status = digitalRead(); //()為接點***********************************
+
+	displayTime();
+
+	if (Button1status == HIGH)
+		digit++;
+	GrTime == digit;
+	if (Button2status == HIGH)
+		tendigit++;
+	GrTime += tendigit * 10;
 
 
-			if (GrTime != 0 && Button1status == HIGH)
-				 digit++;
-				  RdTime == digit;
-		    if (GrTime != 0 && Button2status == HIGH)
-			     tendigit++;
-				  RdTime += tendigit * 10;
-				  
-		retun() ;
+	if (GrTime != 0 && Button1status == HIGH)
+		digit++;
+	RdTime == digit;
+	if (GrTime != 0 && Button2status == HIGH)
+		tendigit++;
+	RdTime += tendigit * 10;
 }
 
 void DefaultMode()
