@@ -25,59 +25,52 @@ void Green(int val);//綠燈亮，val 傳入LOW關閉，HIGH打開
 void Red(int val);//紅燈亮...
 void Orange(int val);//黃燈...
 
+int datapinten = 2;
+int clockpinten = 4;
+int latchpinten = 3;
+byte index = 0;                   // 七段顯示器的數字索引
+const byte LEDs[10] = {
+	B01111110,
+	B00110000,
+	B01101101,
+	B01111001,
+	B00110011,
+	B01011011,
+	B01011111,
+	B01110000,
+	B01111111,
+	B01111011,
+};
+
 // the setup function runs once when you press reset or power the board
 void setup() {
+	pinMode(latchpinten, OUTPUT);
+	pinMode(clockpinten, OUTPUT);
+	pinMode(datapinten, OUTPUT);
+	pinMode(8, OUTPUT);
+
 
 
 }
 
 // the loop function runs over and over again forever
 void loop() {
-	switch (mode) {
-	case 0:
-		DefaultMode();
-		break;
-	case 1:
-		ForceMode(0);
-		break;
-	case 2:
-		ForceMode(1);
-		break;
-	case 3:
-		HeartRateMode();
-		break;
-	case 4:
-		settingMode();
+	digitalWrite(8, HIGH);
+	for (int i = 0;; i++) {
+		displaynumber(i%10);
+		delay(1000);
 	}
 }
 
 
-void displayTime(int time)//153458
+void displaynumber(int time)
 {
-	int digit = 0;
-	int tendigit = 0;
-	int sevensegment[10][8] = {
-		{1,1,1,1,1,1,0,0},//0
-		{0,1,1,0,0,0,0,0},//1
-		{1,1,0,1,1,0,1,0},//2
-		{1,1,1,1,0,0,1,0},//3
-		{0,1,1,0,0,1,1,0},//4
-		{1,0,1,1,0,1,1,0},//5
-		{1,0,1,1,1,1,1,0},//6
-		{1,1,1,0,0,0,0,0},//7
-		{1,1,1,1,1,1,1,0},//8
-		{1,1,1,1,0,1,1,0} }; //9 
-
-	if (digit > 9)
-		digit = 0;
-	if (tendigit > 9)
-		tendigit = 0;
-	if (digit > 9, tendigit > 9)
-		digit = tendigit = 0;
-	digitalWrite(, HIGH);//*****************紅燈亮()紅燈腳位
-
-
-
+	// 送資料前要先把 latchPin 拉成低電位
+		digitalWrite(latchpinten, LOW);
+		// 送出數字的位元資料 (bit pattern)
+		shiftOut(datapinten, clockpinten, LSBFIRST, LEDs[time]);
+		// 送完資料後要把 latchPin 拉回成高電位
+		digitalWrite(latchpinten, HIGH);
 }
 
 
@@ -88,13 +81,13 @@ void settingMode()
 	int Button2status = 0; // 宣告十位鍵狀態
 	int digit = 0; //七段顯示個位數
 	int tendigit = 0; //七段顯示器十位數
-	ButtonSstatus = digitalRead();//判斷ButtonS 的電位 ()為接點*********************
+	//ButtonSstatus = digitalRead();//判斷ButtonS 的電位 ()為接點*********************
 	delay(100);
 
 	if (ButtomSstatus == HIGH) //當設定鍵為高電位進入設定模式---綠燈>>>>紅燈
-		Button1status = digitalRead(); //()為接點***********************************
+//		Button1status = digitalRead(); //()為接點***********************************
 
-	displayTime();
+//	displayTime();
 
 	if (Button1status == HIGH)
 		digit++;
