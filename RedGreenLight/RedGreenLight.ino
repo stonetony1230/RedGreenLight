@@ -184,6 +184,9 @@ void DefaultMode()
 {
 	int light = 0;//0 is green, 1 is orange, 2 is red
 	int time = GrTime * 10;//綠燈時間的百毫秒
+	Orange(LOW);
+	Red(LOW);
+	Green(HIGH);
 	do {
 		if (!pause) {
 			if (time == 0) {
