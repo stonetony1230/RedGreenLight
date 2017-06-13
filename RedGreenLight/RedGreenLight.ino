@@ -83,6 +83,9 @@ void loop() {
 	Green(LOW);
 	Red(LOW);
 	Orange(LOW);
+	do {
+		delay(100);
+	} while (Button1() || Button2() || ButtonS());
 	Buttonsreset();
 }
 
@@ -251,6 +254,10 @@ void ForceMode(int light)
 void HeartRateMode()
 {
 	int count = 0;//­p¼Æ¾¹
+	for (int time = 50; time >= 0; time--) {
+		displayTime(time / 10);
+		delay(100);
+	}
 	for (int time = 600; time >= 0; time--) {
 		if (ButtonS()) {
 			ButtonsS++;
@@ -292,6 +299,13 @@ boolean changeMode()
 			mode = 2;
 			return true;
 		}
+		if (ButtonsS > 0) {
+			pause = !pause;
+			return false;
+		}
+		return false;
+	case 100:
+		ButtonsS++;
 		if (ButtonsS >= 4) {
 			if (mode == 0) {
 				mode = 4;
@@ -302,13 +316,6 @@ boolean changeMode()
 				return true;
 			}
 		}
-		if (ButtonsS > 0) {
-			pause = !pause;
-			return false;
-		}
-		return false;
-	case 100:
-		ButtonsS++;
 		return false;
 	case 1:
 		Buttons1++;
