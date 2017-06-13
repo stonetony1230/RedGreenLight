@@ -2,8 +2,8 @@
 這是一個紅綠燈程式，兼計時器與心率檢測器XDD
 */
 int mode = 0;//記憶此時位於的模式，0為預設模式，1為強制模式綠燈，2為強制模式紅燈，3為測心率模式，4為settingMode
-int GrTime = 0;//綠燈設定ㄉ時間
-int RdTime = 0;//紅燈設定ㄉ時間
+int GrTime = 20;//綠燈設定ㄉ時間
+int RdTime = 30;//紅燈設定ㄉ時間
 void displayTime(int time);//顯示時間的函數
 void settingMode();//呼叫進入設定綠燈紅燈時間的模式
 void DefaultMode();//進入預設模式
@@ -235,8 +235,8 @@ void ForceMode(int light)
 			else
 				displayTime(time / 10);
 			time++;
-			delay(100);
 		}
+		delay(100);
 	} while (!changeMode());
 }
 
