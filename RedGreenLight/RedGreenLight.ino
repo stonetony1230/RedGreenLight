@@ -70,6 +70,7 @@ void loop() {
 		break;
 	case 1:
 		ForceMode();
+		break;
 	case 2:
 		ForceMode();
 		break;
