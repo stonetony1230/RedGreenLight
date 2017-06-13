@@ -262,6 +262,10 @@ void HeartRateMode()
 		if (ButtonS()) {
 			ButtonsS++;
 			Red(HIGH);
+			if (ButtonsS >= 4) {
+				mode = 0;
+				return;
+			}
 		}
 		else if (ButtonsS > 0) {
 			count++;
