@@ -275,7 +275,22 @@ void HeartRateMode()
 		displayTime(time / 10);
 		delay(100);
 	}
-	if (count >= 100) {
+	if (count >= 400) {
+		mode = 0;
+		return;
+	}
+	else if (count >= 300) {
+		Green(HIGH);
+		Orange(HIGH);
+		Red(HIGH);
+		count = count - 300;
+	}
+	else if (count >= 200) {
+		Orange(HIGH);
+		Red(HIGH);
+		count = count - 200;
+	}
+	else if (count >= 100) {
 		Red(HIGH);
 		count = count - 100;
 	}
