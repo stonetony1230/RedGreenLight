@@ -7,7 +7,7 @@ int RdTime = 30;//紅燈設定ㄉ時間
 void displayTime(int time);//顯示時間的函數
 void settingMode();//呼叫進入設定綠燈紅燈時間的模式
 void DefaultMode();//進入預設模式
-void ForceMode(int light);//進入強制模式，傳入0進入綠燈，傳入1進入紅燈
+void ForceMode();//進入強制模式，傳入0進入綠燈，傳入1進入紅燈
 void HeartRateMode();//進入測心率模式
 boolean changeMode();//轉換模式測試，要轉換模式傳回是，不用轉換模式傳回否，應該每0.1秒被呼叫一次於預設或強制模式
 
@@ -69,10 +69,9 @@ void loop() {
 		DefaultMode();
 		break;
 	case 1:
-		ForceMode(0);
-		break;
+		ForceMode();
 	case 2:
-		ForceMode(1);
+		ForceMode();
 		break;
 	case 3:
 		HeartRateMode();
@@ -226,25 +225,31 @@ void DefaultMode()
 	} while (!changeMode());
 }
 
-void ForceMode(int light)
+void ForceMode()
 {
 	int time = 0;//百毫秒數
-	if (light == 0) {
-		Green(HIGH);
-		Red(LOW);
-		Orange(LOW);
-	}
-	else if (light == 1) {
-		Green(LOW);
-		Red(HIGH);
-		Orange(LOW);
-	}
 	do {
 		if (!pause) {
 			if (time > 600)
 				displayTime(time / 600);
 			else
 				displayTime(time / 10);
+			switch (time % 3) {
+			case 0:
+				Green(HIGH);
+				Orange(LOW);
+				Red(LOW);
+				break;
+			case 1:
+				Green(LOW);
+				Orange(HIGH);
+				Red(LOW);
+				break;
+			case 2:
+				Green(LOW);
+				Orange(LOW);
+				Red(HIGH);
+			}
 			time++;
 		}
 		delay(100);
@@ -320,6 +325,7 @@ boolean changeMode()
 		}
 		if (ButtonsS > 0) {
 			pause = !pause;
+			ButtonsS = 0;
 			return false;
 		}
 		return false;
