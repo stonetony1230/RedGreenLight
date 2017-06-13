@@ -45,9 +45,9 @@ int led_yellow = 9;
 int led_red = 10;
 
 //Button
-int Button1 = 11;//個位
-int Button2 = 12;//十位
-int ButtonS = 13;//設定
+int Button1p = 11;//個位
+int Button2p = 12;//十位
+int ButtonSp = 13;//設定
 
 
 				 // the setup function runs once when you press reset or power the board
@@ -158,7 +158,7 @@ void displayTime(int time)//
 
 void settingMode()
 {
-	int ButtomSstatus = 0; // 宣告設定鍵狀態
+	int ButtonSstatus = 0; // 宣告設定鍵狀態
 	int Button1status = 0; // 宣告個位鍵狀態
 	int Button2status = 0; // 宣告十位鍵狀態
 	int digit = 0; //七段顯示個位數
@@ -166,7 +166,7 @@ void settingMode()
 	ButtonSstatus = digitalRead(13);//判斷ButtonS 的電位 13為接點*********************
 	delay(100);
 
-	if (ButtomSstatus == HIGH) //當設定鍵為高電位進入設定模式---綠燈>>>>紅燈
+	if (ButtonSstatus == HIGH) //當設定鍵為高電位進入設定模式---綠燈>>>>紅燈
 		Button1status = digitalRead(11); //11為個位接點
 	Button2status = digitalRead(12); //12為十位接點
 	displayTime();
@@ -186,7 +186,7 @@ void settingMode()
 		tendigit++;
 	RdTime += tendigit * 10;
 
-	return();
+	return;
 }
 
 void DefaultMode()
@@ -311,6 +311,30 @@ boolean changeMode()
 		return false;
 	}
 	return false;
+}
+
+int Button1()
+{
+	if (digitalRead(Button1p) == HIGH) {
+		return 1;
+	};
+	return 0;
+}
+
+int Button2()
+{
+	if (digitalRead(Button2p) == HIGH) {
+		return 1;
+	};
+	return 0;
+}
+
+int ButtonS()
+{
+	if (digitalRead(ButtonSp) == HIGH) {
+		return 1;
+	};
+	return 0;
 }
 
 void Buttonsreset()
