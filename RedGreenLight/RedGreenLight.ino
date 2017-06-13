@@ -142,17 +142,8 @@ void sevenSegWrite1(byte tendigit) {
 void displayTime(int time)//
 {
 
-	sevenSegWrite(digit);
-	sevenSegWrite1(tendigit);
-
-	if (digit > 9)
-		digit = 0;
-	if (tendigit > 9)
-		tendigit = 0;
-	if (digit > 9 && tendigit > 9)
-		digit = tendigit = 0;
-	digitalWrite(10, HIGH);//*****************紅燈亮()紅燈腳位
-
+	sevenSegWrite(time%10);
+	sevenSegWrite1(time/10);
 }
 
 
@@ -169,7 +160,7 @@ void settingMode()
 	if (ButtonSstatus == HIGH) //當設定鍵為高電位進入設定模式---綠燈>>>>紅燈
 		Button1status = digitalRead(11); //11為個位接點
 	Button2status = digitalRead(12); //12為十位接點
-	displayTime();
+//	displayTime();
 
 	if (Button1status == HIGH)
 		digit++;
@@ -342,4 +333,19 @@ void Buttonsreset()
 	Buttons1 = 0;
 	Buttons2 = 0;
 	ButtonsS = 0;
+}
+
+void Green(int val)
+{
+	digitalWrite(led_green, val);
+}
+
+void Red(int val)
+{
+	digitalWrite(led_red, val);
+}
+
+void Orange(int val)
+{
+	digitalWrite(led_yellow, val);
 }
