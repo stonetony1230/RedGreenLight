@@ -2,8 +2,8 @@
 這是一個紅綠燈程式，兼計時器與心率檢測器XDD
 */
 int mode = 0;//記憶此時位於的模式，0為預設模式，1為強制模式綠燈，2為強制模式紅燈，3為測心率模式，4為settingMode
-int GrTime = 0;//綠燈設定ㄉ時間
-int RdTime = 0;//紅燈設定ㄉ時間
+int GrTime = 20;//綠燈設定ㄉ時間
+int RdTime = 30;//紅燈設定ㄉ時間
 void displayTime(int time);//顯示時間的函數
 void settingMode();//呼叫進入設定綠燈紅燈時間的模式
 void DefaultMode();//進入預設模式
@@ -148,36 +148,60 @@ void displayTime(int time)//
 
 
 void settingMode()
-{
-	int ButtonSstatus = 0; // 宣告設定鍵狀態
-	int Button1status = 0; // 宣告個位鍵狀態
-	int Button2status = 0; // 宣告十位鍵狀態
-	int digit = 0; //七段顯示個位數
-	int tendigit = 0; //七段顯示器十位數
-	ButtonSstatus = digitalRead(13);//判斷ButtonS 的電位 13為接點*********************
-	delay(100);
+{   
+	while(ButtonsS == 0) {
+		int Grcount = 0; //七段顯示個位數(Gr計數)
+		int Grcount1 = 0; //七段顯示器十位數(Gr計數)
+		int Button1pstatus = 0;
+		int Button2pstatus = 0;
+		Button1pstatus = digitalRead(Button1p);
+		Button2pstatus = digitalRead(Button2p);
+		GrTime = Grcount + Grcount1 * 10;
+		sevenSegWrite(Grcount);
+		sevenSegWrite1(Grcount1);
+		delay(100);
+		if (Button1pstatus==HIGH)
+			Grcount++;
+			if (Grcount > 9)
+				Grcount = 0;
+				delay(100);
 
-	if (ButtonSstatus == HIGH) //當設定鍵為高電位進入設定模式---綠燈>>>>紅燈
-		Button1status = digitalRead(11); //11為個位接點
-	Button2status = digitalRead(12); //12為十位接點
-//	displayTime();
+			if (Button2pstatus==HIGH)
+			Grcount1++;
+		if (Grcount1 > 9)
+			Grcount1 = 0;
+		if (ButtonS())
+			ButtonsS++;
+		delay(250);
+	}
 
-	if (Button1status == HIGH)
-		digit++;
-	GrTime == digit;
-	if (Button2status == HIGH)
-		tendigit++;
-	GrTime += tendigit * 10;
+	while (ButtonsS == 0) {
+		int Rdcount = 0;
+		int Rdcount1 = 0;
+		int Button1pstatus = 0;
+		int Button2pstatus = 0;
+		Button1pstatus = digitalRead(11);
+		Button2pstatus = digitalRead(12);
+		RdTime = Rdcount + Rdcount1 * 10;
+		sevenSegWrite(Rdcount);
+		sevenSegWrite1(Rdcount1);
+		delay(100);
+		if (Button1pstatus == HIGH)
+			Rdcount++;
+		if (Rdcount > 9)
+			Rdcount = 0;
+			delay(100);
 
-
-	if (GrTime != 0 && Button1status == HIGH)
-		digit++;
-	RdTime == digit;
-	if (GrTime != 0 && Button2status == HIGH)
-		tendigit++;
-	RdTime += tendigit * 10;
-
-	return;
+			if (Button2pstatus == HIGH)
+				Rdcount1++;
+			if (Rdcount1 > 9)
+				Rdcount1 = 0;
+			if (ButtonS())
+				ButtonsS++;
+		delay(500);
+	}
+			mode = 0;
+	
 }
 
 void DefaultMode()
