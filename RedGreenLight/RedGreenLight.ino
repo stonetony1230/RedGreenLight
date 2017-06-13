@@ -80,6 +80,10 @@ void loop() {
 	case 4:
 		settingMode();
 	}
+	Green(LOW);
+	Red(LOW);
+	Orange(LOW);
+	Buttonsreset();
 }
 
 
@@ -142,8 +146,8 @@ void sevenSegWrite1(byte tendigit) {
 void displayTime(int time)//
 {
 
-	sevenSegWrite(time%10);
-	sevenSegWrite1(time/10);
+	sevenSegWrite(time % 10);
+	sevenSegWrite1(time / 10);
 }
 
 
@@ -192,16 +196,20 @@ void DefaultMode()
 			if (time == 0) {
 				light = light + 1;
 				if (light == 3)
+				{
 					light = 0;
+				}
 				switch (light) {
 				case 0:
 					Red(LOW);
 					Green(HIGH);
 					time = GrTime * 10;
+					break;
 				case 1:
 					Green(LOW);
 					Orange(HIGH);
 					time = 50;
+					break;
 				case 2:
 					Orange(LOW);
 					Red(HIGH);
@@ -243,17 +251,32 @@ void ForceMode(int light)
 void HeartRateMode()
 {
 	int count = 0;//計數器
-	for (int time = 0; time <= 600; time++) {
-		if (ButtonS())
+	for (int time = 600; time >= 0; time--) {
+		if (ButtonS()) {
 			ButtonsS++;
+			Red(HIGH);
+		}
 		else if (ButtonsS > 0) {
 			count++;
 			ButtonsS = 0;
+			Red(LOW);
 		}
+		displayTime(time / 10);
 		delay(100);
+	}
+	if (count >= 100) {
+		Red(HIGH);
+		count = count - 100;
 	}
 	displayTime(count);//顯示平均每分鐘的心跳數
 	mode = 0;
+	delay(2000);
+	ButtonsS = 0;
+	do {
+		if (ButtonS())
+			ButtonsS++;
+		delay(100);
+	} while (ButtonsS == 0 || ButtonS());
 }
 
 boolean changeMode()
@@ -262,25 +285,14 @@ boolean changeMode()
 	switch (status) {
 	case 0:
 		if (Buttons1 > 0) {
-			Buttonsreset();
 			mode = 1;
 			return true;
 		}
 		if (Buttons2 > 0) {
-			Buttonsreset();
 			mode = 2;
 			return true;
 		}
-		if (ButtonsS > 0) {
-			Buttonsreset();
-			pause = !pause;
-			return false;
-		}
-		return false;
-	case 100:
-		ButtonsS++;
 		if (ButtonsS >= 4) {
-			Buttonsreset();
 			if (mode == 0) {
 				mode = 4;
 				return true;
@@ -290,11 +302,17 @@ boolean changeMode()
 				return true;
 			}
 		}
+		if (ButtonsS > 0) {
+			pause = !pause;
+			return false;
+		}
+		return false;
+	case 100:
+		ButtonsS++;
 		return false;
 	case 1:
 		Buttons1++;
 		if (Buttons1 >= 4) {
-			Buttonsreset();
 			mode = 3;
 			return true;
 		}
