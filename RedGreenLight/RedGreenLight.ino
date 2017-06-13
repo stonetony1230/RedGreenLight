@@ -7,7 +7,7 @@ int RdTime = 30;//紅燈設定ㄉ時間
 void displayTime(int time);//顯示時間的函數
 void settingMode();//呼叫進入設定綠燈紅燈時間的模式
 void DefaultMode();//進入預設模式
-void ForceMode(int light);//進入強制模式，傳入0進入綠燈，傳入1進入紅燈
+void ForceMode();//進入強制模式，傳入0進入綠燈，傳入1進入紅燈
 void HeartRateMode();//進入測心率模式
 boolean changeMode();//轉換模式測試，要轉換模式傳回是，不用轉換模式傳回否，應該每0.1秒被呼叫一次於預設或強制模式
 
@@ -69,10 +69,10 @@ void loop() {
 		DefaultMode();
 		break;
 	case 1:
-		ForceMode(0);
+		ForceMode();
 		break;
 	case 2:
-		ForceMode(1);
+		ForceMode();
 		break;
 	case 3:
 		HeartRateMode();
@@ -80,6 +80,13 @@ void loop() {
 	case 4:
 		settingMode();
 	}
+	Green(LOW);
+	Red(LOW);
+	Orange(LOW);
+	do {
+		delay(100);
+	} while (Button1() || Button2() || ButtonS());
+	Buttonsreset();
 }
 
 
@@ -142,8 +149,8 @@ void sevenSegWrite1(byte tendigit) {
 void displayTime(int time)//
 {
 
-	sevenSegWrite(time%10);
-	sevenSegWrite1(time/10);
+	sevenSegWrite(time % 10);
+	sevenSegWrite1(time / 10);
 }
 
 
@@ -216,16 +223,20 @@ void DefaultMode()
 			if (time == 0) {
 				light = light + 1;
 				if (light == 3)
+				{
 					light = 0;
+				}
 				switch (light) {
 				case 0:
 					Red(LOW);
 					Green(HIGH);
 					time = GrTime * 10;
+					break;
 				case 1:
 					Green(LOW);
 					Orange(HIGH);
 					time = 50;
+					break;
 				case 2:
 					Orange(LOW);
 					Red(HIGH);
@@ -239,45 +250,89 @@ void DefaultMode()
 	} while (!changeMode());
 }
 
-void ForceMode(int light)
+void ForceMode()
 {
 	int time = 0;//百毫秒數
-	if (light == 0) {
-		Green(HIGH);
-		Red(LOW);
-		Orange(LOW);
-	}
-	else if (light == 1) {
-		Green(LOW);
-		Red(HIGH);
-		Orange(LOW);
-	}
 	do {
 		if (!pause) {
 			if (time > 600)
 				displayTime(time / 600);
 			else
 				displayTime(time / 10);
+			switch (time % 3) {
+			case 0:
+				Green(HIGH);
+				Orange(LOW);
+				Red(LOW);
+				break;
+			case 1:
+				Green(LOW);
+				Orange(HIGH);
+				Red(LOW);
+				break;
+			case 2:
+				Green(LOW);
+				Orange(LOW);
+				Red(HIGH);
+			}
 			time++;
-			delay(100);
 		}
+		delay(100);
 	} while (!changeMode());
 }
 
 void HeartRateMode()
 {
 	int count = 0;//計數器
-	for (int time = 0; time <= 600; time++) {
-		if (ButtonS())
+	for (int time = 50; time >= 0; time--) {
+		displayTime(time / 10);
+		delay(100);
+	}
+	for (int time = 600; time >= 0; time--) {
+		if (ButtonS()) {
 			ButtonsS++;
+			Red(HIGH);
+			if (ButtonsS >= 4) {
+				mode = 0;
+				return;
+			}
+		}
 		else if (ButtonsS > 0) {
 			count++;
 			ButtonsS = 0;
+			Red(LOW);
 		}
+		displayTime(time / 10);
 		delay(100);
+	}
+	if (count >= 400) {
+		mode = 0;
+		return;
+	}
+	else if (count >= 300) {
+		Green(HIGH);
+		Orange(HIGH);
+		Red(HIGH);
+		count = count - 300;
+	}
+	else if (count >= 200) {
+		Orange(HIGH);
+		Red(HIGH);
+		count = count - 200;
+	}
+	else if (count >= 100) {
+		Red(HIGH);
+		count = count - 100;
 	}
 	displayTime(count);//顯示平均每分鐘的心跳數
 	mode = 0;
+	delay(2000);
+	ButtonsS = 0;
+	do {
+		if (ButtonS())
+			ButtonsS++;
+		delay(100);
+	} while (ButtonsS == 0 || ButtonS());
 }
 
 boolean changeMode()
@@ -286,25 +341,22 @@ boolean changeMode()
 	switch (status) {
 	case 0:
 		if (Buttons1 > 0) {
-			Buttonsreset();
 			mode = 1;
 			return true;
 		}
 		if (Buttons2 > 0) {
-			Buttonsreset();
 			mode = 2;
 			return true;
 		}
 		if (ButtonsS > 0) {
-			Buttonsreset();
 			pause = !pause;
+			ButtonsS = 0;
 			return false;
 		}
 		return false;
 	case 100:
 		ButtonsS++;
 		if (ButtonsS >= 4) {
-			Buttonsreset();
 			if (mode == 0) {
 				mode = 4;
 				return true;
@@ -318,7 +370,6 @@ boolean changeMode()
 	case 1:
 		Buttons1++;
 		if (Buttons1 >= 4) {
-			Buttonsreset();
 			mode = 3;
 			return true;
 		}
