@@ -1,6 +1,6 @@
 /*
 這是一個紅綠燈程式，兼計時器與心率檢測器XDD
- */
+*/
 int mode = 0;//記憶此時位於的模式，0為預設模式，1為強制模式綠燈，2為強制模式紅燈，3為測心率模式，4為settingMode
 int GrTime = 0;//綠燈設定ㄉ時間
 int RdTime = 0;//紅燈設定ㄉ時間
@@ -25,10 +25,41 @@ void Green(int val);//綠燈亮，val 傳入LOW關閉，HIGH打開
 void Red(int val);//紅燈亮...
 void Orange(int val);//黃燈...
 
-// the setup function runs once when you press reset or power the board
+					 //腳位設定**************************************************
+
+					 //74HC595腳位(2~7)
+
+					 //74HC595個位
+int dataPin = 2;//個位數IC 14腳位(data)
+int latchPin = 3;//個位數IC12腳位(latch暫存器時脈)
+int clockPin = 4;//個位數IC 11腳位(clock序列時脈)
+
+				 //74HC595十位
+int dataPin1 = 5;//十位數IC 14腳位(data)
+int latchPin1 = 6;//十位數IC12腳位(latch暫存器時脈)
+int clockPin1 = 7;//十位數IC 11腳位(clock序列時脈)
+
+				  //LED
+int led_green = 8;
+int led_yellow = 9;
+int led_red = 10;
+
+//Button
+int Button1 = 11;//個位
+int Button2 = 12;//十位
+int ButtonS = 13;//設定
+
+
+				 // the setup function runs once when you press reset or power the board
 void setup() {
-
-
+	for (int i = 2; i <= 10; i++)
+	{
+		pinMode(i, OUTPUT);
+	}
+	for (int j = 11; j <= 13; j++)
+	{
+		pinMode(j, INPUT);
+	}
 }
 
 // the loop function runs over and over again forever
@@ -52,31 +83,75 @@ void loop() {
 }
 
 
-void displayTime(int time)//153458
+
+//  dp,a,b,c,d,e,f,g of Seven-Segment LED
+byte seven_seg_digits[11] = {
+	B01111110,
+	B00110000,
+	B01101101,
+	B01111001,
+	B00110011,
+	B01011011,
+	B01011111,
+	B01110000,
+	B01111111,
+	B01111011,
+	B00000000
+};
+
+byte seven_seg_tendigits[11] = {
+	B01111110,
+	B00110000,
+	B01101101,
+	B01111001,
+	B00110011,
+	B01011011,
+	B01011111,
+	B01110000,
+	B01111111,
+	B01111011,
+	B00000000
+};
+
+
+
+//個位
+void sevenSegWrite(byte digit) {
+	// 送資料前要先把 latchPin 拉成低電位
+	digitalWrite(latchPin, LOW);
+
+	// 送出數字的位元資料 (bit pattern)
+	shiftOut(dataPin, clockPin, LSBFIRST, seven_seg_digits[digit]);
+
+	// 送完資料後要把 latchPin 拉回成高電位
+	digitalWrite(latchPin, HIGH);
+}
+
+//十位
+void sevenSegWrite1(byte tendigit) {
+	// 送資料前要先把 latchPin 拉成低電位
+	digitalWrite(latchPin1, LOW);
+
+	// 送出數字的位元資料 (bit pattern)
+	shiftOut(dataPin1, clockPin1, LSBFIRST, seven_seg_tendigits[tendigit]);
+
+	// 送完資料後要把 latchPin 拉回成高電位
+	digitalWrite(latchPin1, HIGH);
+}
+
+void displayTime(int time)//
 {
-	int digit = 0;
-	int tendigit = 0;
-	int sevensegment[10][8] = {
-		{1,1,1,1,1,1,0,0},//0
-		{0,1,1,0,0,0,0,0},//1
-		{1,1,0,1,1,0,1,0},//2
-		{1,1,1,1,0,0,1,0},//3
-		{0,1,1,0,0,1,1,0},//4
-		{1,0,1,1,0,1,1,0},//5
-		{1,0,1,1,1,1,1,0},//6
-		{1,1,1,0,0,0,0,0},//7
-		{1,1,1,1,1,1,1,0},//8
-		{1,1,1,1,0,1,1,0} }; //9 
+
+	sevenSegWrite(digit);
+	sevenSegWrite1(tendigit);
 
 	if (digit > 9)
 		digit = 0;
 	if (tendigit > 9)
 		tendigit = 0;
-	if (digit > 9, tendigit > 9)
+	if (digit > 9 && tendigit > 9)
 		digit = tendigit = 0;
-	digitalWrite(, HIGH);//*****************紅燈亮()紅燈腳位
-
-
+	digitalWrite(10, HIGH);//*****************紅燈亮()紅燈腳位
 
 }
 
@@ -88,12 +163,12 @@ void settingMode()
 	int Button2status = 0; // 宣告十位鍵狀態
 	int digit = 0; //七段顯示個位數
 	int tendigit = 0; //七段顯示器十位數
-	ButtonSstatus = digitalRead();//判斷ButtonS 的電位 ()為接點*********************
+	ButtonSstatus = digitalRead(13);//判斷ButtonS 的電位 13為接點*********************
 	delay(100);
 
 	if (ButtomSstatus == HIGH) //當設定鍵為高電位進入設定模式---綠燈>>>>紅燈
-		Button1status = digitalRead(); //()為接點***********************************
-
+		Button1status = digitalRead(11); //11為個位接點
+	Button2status = digitalRead(12); //12為十位接點
 	displayTime();
 
 	if (Button1status == HIGH)
@@ -110,6 +185,8 @@ void settingMode()
 	if (GrTime != 0 && Button2status == HIGH)
 		tendigit++;
 	RdTime += tendigit * 10;
+
+	return();
 }
 
 void DefaultMode()
