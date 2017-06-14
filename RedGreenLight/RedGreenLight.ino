@@ -156,35 +156,73 @@ void displayTime(int time)//
 
 void settingMode()
 {
-	int ButtonSstatus = 0; // 宣告設定鍵狀態
-	int Button1status = 0; // 宣告個位鍵狀態
-	int Button2status = 0; // 宣告十位鍵狀態
-	int digit = 0; //七段顯示個位數
-	int tendigit = 0; //七段顯示器十位數
-	ButtonSstatus = digitalRead(13);//判斷ButtonS 的電位 13為接點*********************
-	delay(100);
+	int Grcount = 0; //七段顯示個位數(Gr計數)
+	int Grcount1 = 0; //七段顯示十位數(Gr計數)
+	int Rdcount = 0;//七段顯示個位數(Rd計數)
+	int Rdcount1 = 0;//七段顯示十位數(Rd計數)
+	digitalWrite(led_green, HIGH);
+	int Button1pstatus = 0;
+	int Button2pstatus = 0;
+	while (ButtonS() == 0) {
+		if (Button1())
+			Button1pstatus++;
+		else if (Button1pstatus > 0) {
+			Grcount++;
+			Button1pstatus = 0;
+			if (Grcount == 10) {
+				Grcount = 0;
+			}
+		}
+		if (Button2())
+			Button2pstatus++;
+		else if (Button2pstatus > 0) {
+			Grcount1++;
+			Button2pstatus = 0;
+			if (Grcount1 == 10) {
+				Grcount1 = 0;
+			}
+		}
+		GrTime = Grcount + Grcount1 * 10;
+		displayTime(GrTime);
+		delay(100);
+	}
+	if (GrTime <= 2)
+		GrTime = 2;
+	while (ButtonS())
+		delay(100);
+	Buttonsreset();
+	Button1pstatus = 0;
+	Button2pstatus = 0;
+	while (ButtonS() == 0) {
+		digitalWrite(led_green, LOW);
+		digitalWrite(led_red, HIGH);
+		if (Button1())
+			Button1pstatus++;
+		else if (Button1pstatus > 0) {
+			Rdcount++;
+			Button1pstatus = 0;
+			if (Rdcount == 10) {
+				Rdcount = 0;
+			}
+		}
+		if (Button2())
+			Button2pstatus++;
+		else if (Button2pstatus > 0) {
+			Rdcount1++;
+			Button2pstatus = 0;
+			if (Rdcount1 == 10) {
+				Rdcount1 = 0;
+			}
+		}
+		RdTime = Rdcount + Rdcount1 * 10;
+		displayTime(RdTime);
+		delay(100);
+	}
+	if (RdTime <= 2)
+		RdTime = 2;
+	digitalWrite(led_red, LOW);
 
-	if (ButtonSstatus == HIGH) //當設定鍵為高電位進入設定模式---綠燈>>>>紅燈
-		Button1status = digitalRead(11); //11為個位接點
-	Button2status = digitalRead(12); //12為十位接點
-//	displayTime();
-
-	if (Button1status == HIGH)
-		digit++;
-	GrTime == digit;
-	if (Button2status == HIGH)
-		tendigit++;
-	GrTime += tendigit * 10;
-
-
-	if (GrTime != 0 && Button1status == HIGH)
-		digit++;
-	RdTime == digit;
-	if (GrTime != 0 && Button2status == HIGH)
-		tendigit++;
-	RdTime += tendigit * 10;
-
-	return;
+	mode = 0;
 }
 
 void DefaultMode()
@@ -228,6 +266,7 @@ void DefaultMode()
 
 void ForceMode()
 {
+	int speed = 2;
 	int time = 0;//百毫秒數
 	do {
 		if (!pause) {
@@ -316,11 +355,11 @@ boolean changeMode()
 	int status = Button1() + Button2() * 10 + ButtonS() * 100;
 	switch (status) {
 	case 0:
-		if (Buttons1 > 0) {
+		if (Buttons1 > 0 && mode == 0) {
 			mode = 1;
 			return true;
 		}
-		if (Buttons2 > 0) {
+		if (Buttons2 > 0 && mode == 0) {
 			mode = 2;
 			return true;
 		}
@@ -329,6 +368,7 @@ boolean changeMode()
 			ButtonsS = 0;
 			return false;
 		}
+		Buttonsreset();
 		return false;
 	case 100:
 		ButtonsS++;
