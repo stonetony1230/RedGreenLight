@@ -83,6 +83,7 @@ void loop() {
 	Green(LOW);
 	Red(LOW);
 	Orange(LOW);
+	pause = false;
 	do {
 		delay(100);
 	} while (Button1() || Button2() || ButtonS());
@@ -274,18 +275,21 @@ void ForceMode()
 				displayTime(time / 600);
 			else
 				displayTime(time / 10);
-			switch (time % 3) {
+			switch (time % 6) {
 			case 0:
+			case 1:
 				Green(HIGH);
 				Orange(LOW);
 				Red(LOW);
 				break;
-			case 1:
+			case 2:
+			case 3:
 				Green(LOW);
 				Orange(HIGH);
 				Red(LOW);
 				break;
-			case 2:
+			case 4:
+			case 5:
 				Green(LOW);
 				Orange(LOW);
 				Red(HIGH);
