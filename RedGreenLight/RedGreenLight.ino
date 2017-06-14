@@ -365,7 +365,8 @@ void GamingMode()
 	int winorange = 0;//黃燈勝場
 	int wingreen = 0;//綠燈勝場
 	int guess;//儲存亂數的數字
-	int count;//計次用來更新亂數用的
+	int count=0;//計次用來更新亂數用的
+	int interval=20;//時間的間格哈哈
 	do {
 		displayTime(33);
 		delay(1000);
@@ -374,8 +375,9 @@ void GamingMode()
 		displayTime(11);
 		delay(1000);
 		do {
-			if (19 == count) {
+			if (interval == count) {
 				guess = random(100);
+				interval = random(10, 26);
 				displayTime(guess);
 				count = 0;
 			}
