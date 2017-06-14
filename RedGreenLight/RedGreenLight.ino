@@ -1,7 +1,7 @@
 /*
 這是一個紅綠燈程式，兼計時器與心率檢測器XDD
 */
-int mode = 0;//記憶此時位於的模式，0為預設模式，1為強制模式綠燈，2為強制模式紅燈，3為測心率模式，4為settingMode
+int mode = 0;//記憶此時位於的模式，0為預設模式，1為強制模式綠燈，2為強制模式紅燈，3為測心率模式，4為settingMode，5為GamingMode
 int GrTime = 20;//綠燈設定ㄉ時間
 int RdTime = 30;//紅燈設定ㄉ時間
 void displayTime(int time);//顯示時間的函數
@@ -9,6 +9,7 @@ void settingMode();//呼叫進入設定綠燈紅燈時間的模式
 void DefaultMode();//進入預設模式
 void ForceMode();//進入強制模式，傳入0進入綠燈，傳入1進入紅燈
 void HeartRateMode();//進入測心率模式
+void GamingMode();//進入遊戲模式
 boolean changeMode();//轉換模式測試，要轉換模式傳回是，不用轉換模式傳回否，應該每0.1秒被呼叫一次於預設或強制模式
 
 int Button1();//回傳個位數的按鈕是否按下，是則回傳1，否則回傳0
@@ -52,6 +53,7 @@ int ButtonSp = 13;//設定
 
 				 // the setup function runs once when you press reset or power the board
 void setup() {
+	randomSeed(analogRead(0));
 	for (int i = 2; i <= 10; i++)
 	{
 		pinMode(i, OUTPUT);
@@ -79,6 +81,10 @@ void loop() {
 		break;
 	case 4:
 		settingMode();
+		break;
+	case 5:
+		GamingMode();
+		break;
 	}
 	Green(LOW);
 	Red(LOW);
@@ -354,6 +360,74 @@ void HeartRateMode()
 	} while (ButtonsS == 0 || ButtonS());
 }
 
+void GamingMode()
+{
+	int winorange = 0;//黃燈勝場
+	int wingreen = 0;//綠燈勝場
+	int guess;//儲存亂數的數字
+	int count;//計次用來更新亂數用的
+	do {
+		displayTime(33);
+		delay(1000);
+		displayTime(22);
+		delay(1000);
+		displayTime(11);
+		delay(1000);
+		do {
+			if (19 == count) {
+				guess = random(100);
+				displayTime(guess);
+				count = 0;
+			}
+			else
+				count++;
+			if (ButtonS()) {
+				ButtonsS++;
+				if (ButtonsS >= 4) {
+					mode = 0;
+					return;
+				}
+			}
+			else if (ButtonsS > 0) {
+				ButtonsS = 0;
+			}
+			delay(50);
+		} while (!(Buttons1 = Buttons1 + Button1()) && !(Buttons2 = Buttons2 + Button2()));//按下個位數按鈕或十位數按鈕跳出且status加一
+		ButtonsS = 0;
+		if ((guess % 10) == (guess / 10)) {
+			Green(Buttons1);
+			Orange(Buttons2);
+			wingreen += Buttons1;
+			winorange += Buttons2;
+		}
+		else {
+			Orange(Buttons1);
+			Green(Buttons2);
+			winorange += Buttons1;
+			wingreen += Buttons2;
+		}
+		displayTime(winorange * 10 + wingreen);
+		do {
+			if (ButtonS()) {
+				ButtonsS++;
+				if (ButtonsS >= 4) {
+					mode = 0;
+					return;
+				}
+			}
+			delay(100);
+		} while (ButtonsS == 0||ButtonS());
+		if (9 == winorange || 9 == wingreen) {
+			mode = 0;
+			return;
+		}
+		Buttonsreset();//重新開始新的一輪直到退出
+		Green(Buttons1);//燈都關掉XDD
+		Orange(Buttons2);
+	} while (true);
+	mode = 0;
+}
+
 boolean changeMode()
 {
 	int status = Button1() + Button2() * 10 + ButtonS() * 100;
@@ -396,6 +470,10 @@ boolean changeMode()
 		return false;
 	case 10:
 		Buttons2++;
+		if (Buttons2 >= 4) {
+			mode = 5;
+			return true;
+		}
 	default:
 		return false;
 	}
