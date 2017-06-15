@@ -325,7 +325,18 @@ void HeartRateMode()
 	for (int time = 50; time >= 0; time--) {
 		displayTime(time / 10);
 		delay(100);
+		if (ButtonS()) {
+			ButtonsS++;
+			if (ButtonsS >= 10) {
+				mode = 6;
+				return;
+			}
+		}
+		else {
+			ButtonsS = 0;
+		}
 	}
+	Buttonsreset();
 	for (int time = 600; time >= 0; time--) {
 		if (ButtonS()) {
 			ButtonsS++;
@@ -378,7 +389,7 @@ void GamingMode()
 	int winorange = 0;//黃燈勝場
 	int wingreen = 0;//綠燈勝場
 	int guess = 0;//儲存亂數的數字
-	int interval=20;//時間的間格哈哈
+	int interval = 20;//時間的間格哈哈
 	int count = interval;//計次用來更新亂數用的
 	do {
 		displayTime(33);
@@ -431,7 +442,7 @@ void GamingMode()
 				}
 			}
 			delay(100);
-		} while (ButtonsS == 0||ButtonS());
+		} while (ButtonsS == 0 || ButtonS());
 		if (9 == winorange || 9 == wingreen) {
 			mode = 0;
 			return;
@@ -489,6 +500,7 @@ boolean changeMode()
 			mode = 5;
 			return true;
 		}
+		/*
 	case 11:
 		Buttons2++;
 		Buttons1++;
@@ -496,6 +508,8 @@ boolean changeMode()
 			mode = 6;
 			return true;
 		}
+		如果有增設新模式可以用到
+		*/
 	default:
 		return false;
 	}
