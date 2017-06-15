@@ -285,8 +285,13 @@ void ForceMode()
 	int time = 0;//百毫秒數
 	do {
 		if (!pause) {
-			if (time > 600)
+			if (time > 600) {
+				if (time >= 59999) {
+					mode = 0;
+					return;
+				}
 				displayTime(time / 600);
+			}
 			else
 				displayTime(time / 10);
 			switch (time % 6) {
@@ -372,9 +377,9 @@ void GamingMode()
 {
 	int winorange = 0;//黃燈勝場
 	int wingreen = 0;//綠燈勝場
-	int guess;//儲存亂數的數字
-	int count=0;//計次用來更新亂數用的
+	int guess = 0;//儲存亂數的數字
 	int interval=20;//時間的間格哈哈
+	int count = interval;//計次用來更新亂數用的
 	do {
 		displayTime(33);
 		delay(1000);
