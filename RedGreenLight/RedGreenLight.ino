@@ -92,7 +92,7 @@ void loop() {
 
 
 //  dp,a,b,c,d,e,f,g of Seven-Segment LED
-byte seven_seg_digits[11] = {
+byte seven_seg_digits[14] = {
 	B01111110,
 	B00110000,
 	B01101101,
@@ -103,23 +103,28 @@ byte seven_seg_digits[11] = {
 	B01110000,
 	B01111111,
 	B01111011,
-	B00000000
+	B00000000,
+	B00111110,//U
+	B01001110,//C
+	B01001110//K右邊
 };
 
-byte seven_seg_tendigits[11] = {
-	B01111110,
-	B00110000,
-	B01101101,
-	B01111001,
-	B00110011,
-	B01011011,
-	B01011111,
-	B01110000,
-	B01111111,
-	B01111011,
-	B00000000
+byte seven_seg_tendigits[14] = {
+	B01111110,//0
+	B00110000,//1
+	B01101101,//2
+	B01111001,//3
+	B00110011,//4
+	B01011011,//5
+	B01011111,//6
+	B01110000,//7
+	B01111111,//8
+	B01111011,//9
+	B00000000,//不顯示
+	B01000111,//F
+	B00111110,//U
+	B00000111//K左
 };
-
 
 
 //個位
@@ -426,4 +431,16 @@ void Red(int val)
 void Orange(int val)
 {
 	digitalWrite(led_yellow, val);
+}
+void FUCK()
+{
+	sevenSegWrite1(12);
+	sevenSegWrite(12);
+	delay(100);
+	sevenSegWrite1(13);
+	sevenSegWrite(13);
+	delay(100);
+	sevenSegWrite1(14);
+	sevenSegWrite(14);
+	delay(100);
 }
