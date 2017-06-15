@@ -1,7 +1,7 @@
 /*
 硂琌厚縊祘Α璸竟籔み瞯浪代竟XDD
 */
-int mode = 0;//癘拘家Α0箇砞家Α1眏家Α厚縊2眏家Α縊3代み瞯家Α4settingMode5GamingMode
+int mode = 0;//癘拘家Α0箇砞家Α1眏家Α厚縊2眏家Α縊3代み瞯家Α4settingMode5GamingMode6FUCK眒矹
 int GrTime = 20;//厚縊砞﹚丁
 int RdTime = 30;//縊砞﹚丁
 void displayTime(int time);//陪ボ丁ㄧ计
@@ -50,6 +50,8 @@ int Button1p = 11;//
 int Button2p = 12;//
 int ButtonSp = 13;//砞﹚
 
+void FUCK();//眒矹
+
 
 				 // the setup function runs once when you press reset or power the board
 void setup() {
@@ -85,6 +87,9 @@ void loop() {
 	case 5:
 		GamingMode();
 		break;
+	case 6:
+		FUCK();
+		break;
 	}
 	Green(LOW);
 	Red(LOW);
@@ -99,7 +104,7 @@ void loop() {
 
 
 //  dp,a,b,c,d,e,f,g of Seven-Segment LED
-byte seven_seg_digits[11] = {
+byte seven_seg_digits[14] = {
 	B01111110,
 	B00110000,
 	B01101101,
@@ -110,24 +115,28 @@ byte seven_seg_digits[11] = {
 	B01110000,
 	B01111111,
 	B01111011,
-	B00000000
+	B00000000,
+	B00111110,//U
+	B01001110,//C
+	B01001110//K娩
 };
 
-byte seven_seg_tendigits[11] = {
-	B01111110,
-	B00110000,
-	B01101101,
-	B01111001,
-	B00110011,
-	B01011011,
-	B01011111,
-	B01110000,
-	B01111111,
-	B01111011,
-	B00000000
+byte seven_seg_tendigits[14] = {
+	B01111110,//0
+	B00110000,//1
+	B01101101,//2
+	B01111001,//3
+	B00110011,//4
+	B01011011,//5
+	B01011111,//6
+	B01110000,//7
+	B01111111,//8
+	B01111011,//9
+	B00000000,//ぃ陪ボ
+	B01000111,//F
+	B00111110,//U
+	B00000111//Kオ
 };
-
-
 
 //
 void sevenSegWrite(byte digit) {
@@ -273,7 +282,6 @@ void DefaultMode()
 
 void ForceMode()
 {
-	int speed = 2;
 	int time = 0;//κ睝计
 	do {
 		if (!pause) {
@@ -317,7 +325,7 @@ void HeartRateMode()
 		if (ButtonS()) {
 			ButtonsS++;
 			Red(HIGH);
-			if (ButtonsS >= 4) {
+			if (ButtonsS >= 10) {
 				mode = 0;
 				return;
 			}
@@ -385,7 +393,7 @@ void GamingMode()
 				count++;
 			if (ButtonS()) {
 				ButtonsS++;
-				if (ButtonsS >= 4) {
+				if (ButtonsS >= 10) {
 					mode = 0;
 					return;
 				}
@@ -412,7 +420,7 @@ void GamingMode()
 		do {
 			if (ButtonS()) {
 				ButtonsS++;
-				if (ButtonsS >= 4) {
+				if (ButtonsS >= 10) {
 					mode = 0;
 					return;
 				}
@@ -452,7 +460,7 @@ boolean changeMode()
 		return false;
 	case 100:
 		ButtonsS++;
-		if (ButtonsS >= 4) {
+		if (ButtonsS >= 10) {
 			if (mode == 0) {
 				mode = 4;
 				return true;
@@ -465,15 +473,22 @@ boolean changeMode()
 		return false;
 	case 1:
 		Buttons1++;
-		if (Buttons1 >= 4) {
+		if (Buttons1 >= 10) {
 			mode = 3;
 			return true;
 		}
 		return false;
 	case 10:
 		Buttons2++;
-		if (Buttons2 >= 4) {
+		if (Buttons2 >= 10) {
 			mode = 5;
+			return true;
+		}
+	case 11:
+		Buttons2++;
+		Buttons1++;
+		if (Buttons2 >= 10 && Buttons1 >= 10) {
+			mode = 6;
 			return true;
 		}
 	default:
@@ -526,4 +541,18 @@ void Red(int val)
 void Orange(int val)
 {
 	digitalWrite(led_yellow, val);
+}
+
+void FUCK()
+{
+	sevenSegWrite1(11);
+	sevenSegWrite(11);
+	delay(1000);
+	sevenSegWrite1(12);
+	sevenSegWrite(12);
+	delay(1000);
+	sevenSegWrite1(13);
+	sevenSegWrite(13);
+	delay(1000);
+	mode = 0;
 }
